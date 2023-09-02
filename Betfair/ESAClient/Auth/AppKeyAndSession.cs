@@ -11,7 +11,8 @@ namespace Betfair.ESAClient.Auth
         public string AppKey { get; private set; }
         public DateTime CreationTime  {get; private set;}
         public string Session { get; private set; }
-        AppKeyAndSession(string appKey, string sessionKey)
+
+        public AppKeyAndSession(string appKey, string sessionKey)
         {
             AppKey = appKey;
             Session = sessionKey;
