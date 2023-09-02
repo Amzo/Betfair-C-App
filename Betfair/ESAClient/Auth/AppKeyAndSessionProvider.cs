@@ -1,6 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Authentication;
 using Newtonsoft.Json;
 
@@ -58,24 +60,18 @@ namespace Betfair.ESAClient.Auth
                 using (HttpClient client = new HttpClient())
                 {
                     client.Timeout = Timeout;
-                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
-                    request.Headers.Add("X-Application", _key);
-                    request.Headers.Accept.ParseAdd("application/json");
-
-                    HttpResponseMessage response = await client.SendAsync(request);
-
-                    if (response.IsSuccessStatusCode)
+                    HttpWebRequest loginRequest = (HttpWebRequest)WebRequest.Create(url);
+                    loginRequest.Headers.Add("X-Application", _key);
+                    loginRequest.Accept = "application/json";
+                    loginRequest.Method = "POST";
+                    loginRequest.Timeout = (int)Timeout.TotalMilliseconds;
+                    WebResponse thePage = loginRequest.GetResponse();
+                    using (StreamReader reader = new StreamReader(thePage.GetResponseStream()))
                     {
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        Trace.TraceInformation("{0}: Response: {1}", _host, responseBody);
-                        sessionDetails = JsonConvert.DeserializeObject<SessionDetails>(responseBody);
+                        string response = reader.ReadToEnd();
+                        Trace.TraceInformation("{0}: Response: {1}", _host, response);
+                        sessionDetails = JsonConvert.DeserializeObject<SessionDetails>(response);
                     }
-                    else
-                    {
-                        Trace.TraceInformation("Received HTTP {0}", response.StatusCode);
-                        throw new IOException($"SSO Authentication - call failed, status code: {response.StatusCode}");
-                    }
-
                 }
             }
             catch (Exception e)
@@ -89,6 +85,12 @@ namespace Betfair.ESAClient.Auth
                 throw new InvalidCredentialException("SSO Authentication - response is fail: " + sessionDetails?.error);
 
             return _session;
+        }
+
+        public void ExpireTokenNow()
+        {
+            Trace.TraceInformation("SSO Login - expiring session token now");
+            _session = null;
         }
     }
 }
