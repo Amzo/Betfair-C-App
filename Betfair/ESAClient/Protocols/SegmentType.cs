@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Betfair.ESAClient.Protocols
 {
-    internal class SegmentType
-    {
-    }
+    public enum SegmentType
+        {
+            NONE,
+            SEG_START,
+            SEG,
+            SEG_END
+        }
 }
