@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Betfair.ESAClient.Protocols
 {
-    internal class ChangeMessage <T>
+    public class ChangeMessage <T>
     {
         private readonly DateTime _receivedTime;
 
