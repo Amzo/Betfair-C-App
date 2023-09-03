@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Betfair.ESAClient.Auth
 {
-    internal class AppKeyAndSession
+    public class AppKeyAndSession
     {
         public string AppKey { get; private set; }
         public DateTime CreationTime  {get; private set;}

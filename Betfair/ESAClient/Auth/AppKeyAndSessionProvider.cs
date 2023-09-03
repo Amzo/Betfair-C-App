@@ -9,14 +9,14 @@ using Newtonsoft.Json;
 
 namespace Betfair.ESAClient.Auth
 {
-    internal class AppKeyAndSessionProvider
+    public class AppKeyAndSessionProvider
     {
         private string _key;
         private string _host;
         private string _password;
         private string _username;
 
-        private AppKeyAndSession _session;
+        private AppKeyAndSession? _session;
 
         public const string HOST_COM = "identitysso.netfair.com";
 
@@ -38,7 +38,7 @@ namespace Betfair.ESAClient.Auth
             ExpireSessionTime = TimeSpan.FromHours(3);
         }
 
-        public async Task<AppKeyAndSession> GetSession()
+        public AppKeyAndSession GetSession()
         {
             if (_session != null )
             {
@@ -97,8 +97,8 @@ namespace Betfair.ESAClient.Auth
 
 class SessionDetails
 {
-    public string token;
-    public string product;
-    public string status;
-    public string error;
+    public string? token;
+    public string? product;
+    public string? status;
+    public string? error;
 }
